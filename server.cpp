@@ -139,7 +139,7 @@ void HandleConnections::AcceptConnections()
         }
 		sockaddr_in client_addr{};
 		int addrLen = sizeof(client_addr);
-		unsigned long long client_socket = accept(listen_socket_, reinterpret_cast<SOCKADDR*>(&client_addr), &addrLen);
+		unsigned long long client_socket = accept(listen_socket_, reinterpret_cast<sockaddr*>(&client_addr), &addrLen);
 		if (client_socket != INVALID_SOCKET) {
 			std::jthread backgroundThread(&HandleClient::ControlClient, HandleClient(client_socket, client_addr));
 			//backgroundThread.detach();
