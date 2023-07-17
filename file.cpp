@@ -87,7 +87,7 @@ namespace rat{
         while (true)
         {
             long long readSize = (((static_cast<long long>(1000)) < (file_size - sent)) ? (static_cast<long long>(1000)) : (file_size - sent));
-            ZeroMemory(buffer, sizeof(char) * 1000);
+            memset(buffer,0, sizeof(char) * 1000);
             ifs_file.read(buffer, readSize);
             sock.SafeSend(buffer, (int)readSize);
             if (sock.Disconnected())

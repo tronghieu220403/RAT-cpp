@@ -27,7 +27,11 @@ namespace rat{
         int GetMaxClient();
         ~Server(){
             if (listen_socket_ != INVALID_SOCKET){
-                closesocket(listen_socket_);
+                #ifdef _WIN32
+                    closesocket(listen_socket_);
+                #elif __linux__
+                    close(listen_socket_);
+                #endif
             }
             Clean();
         };

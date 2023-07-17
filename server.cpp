@@ -8,49 +8,61 @@ std::map< std::string, std::queue<ServerCmd>, std::less<> > ServerInput::server_
 
 int Server::CreateLocalServer()
 {
-    int iResult;
+    int i_result;
 	struct addrinfo* result = 0;
 
 	// Initialize Winsock
+	#ifdef _WIN32
 	WSADATA wsaData;
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		return iResult;
+	i_result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (i_result != 0) {
+		return i_result;
 	}
+	#endif
 
 	struct addrinfo hints;
-	ZeroMemory(&hints, sizeof(hints));
+	std::memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(0, &(std::to_string(kDefaultPort))[0], &hints, &result);
-	if (iResult != 0) {
-		WSACleanup();
-		return WSAGetLastError();
+	i_result = getaddrinfo(0, &(std::to_string(kDefaultPort))[0], &hints, &result);
+	if (i_result != 0) {
+		goto CREATE_FAIL;
 	}
 
 	// Create a SOCKET for the server to listen for client connections.
 	listen_socket_ = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (listen_socket_ == INVALID_SOCKET) {
 		freeaddrinfo(result);
-		WSACleanup();
-		return WSAGetLastError();
+		goto CREATE_FAIL;
 	}
 
 	// Setup the TCP listening socket
-	iResult = bind(listen_socket_, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
+	i_result = bind(listen_socket_, result->ai_addr, (int)result->ai_addrlen);
+	if (i_result == SOCKET_ERROR) {
 		freeaddrinfo(result);
-		closesocket(listen_socket_);
-		WSACleanup();
-		return WSAGetLastError();
+		#ifdef _WIN32
+			closesocket(listen_socket_);
+		#elif __linux__
+			close(listen_socket_);
+		#endif
+		goto CREATE_FAIL;
 	}
 
 	freeaddrinfo(result);
     return 0;
+
+	CREATE_FAIL:
+		#ifdef _WIN32
+			WSACleanup();
+			return WSAGetLastError();
+		#elif __linux__
+			return i_result;
+		#endif
+
 }
 
 int Server::Listen()
@@ -138,8 +150,13 @@ void HandleConnections::AcceptConnections()
             continue;
         }
 		sockaddr_in client_addr{};
-		int addrLen = sizeof(client_addr);
-		unsigned long long client_socket = accept(listen_socket_, reinterpret_cast<SOCKADDR*>(&client_addr), &addrLen);
+		#ifdef _WIN32
+			int addrLen = sizeof(client_addr);
+			unsigned long long client_socket = accept(listen_socket_, reinterpret_cast<sockaddr*>(&client_addr), &addrLen);
+		#elif __linux__
+			socklen_t addrLen = static_cast<socklen_t>(sizeof(client_addr));
+			unsigned long long client_socket = accept(listen_socket_, reinterpret_cast<sockaddr*>(&client_addr), &addrLen);
+		#endif
 		if (client_socket != INVALID_SOCKET) {
 			std::jthread backgroundThread(&HandleClient::ControlClient, HandleClient(client_socket, client_addr));
 			//backgroundThread.detach();

@@ -7,12 +7,12 @@ namespace rat{
     class TcpSocket
     {
     private:
-        unsigned __int64 socket_ = INVALID_SOCKET;   
+        unsigned long long socket_ = INVALID_SOCKET;   
         bool disconnected_ = false;
         void Close();
     public:
         TcpSocket();
-        explicit TcpSocket(unsigned __int64 socket);
+        explicit TcpSocket(unsigned long long socket);
         bool Disconnected() const;
         
         int SafeRecv(char *buf, int len);
@@ -29,7 +29,7 @@ namespace rat{
         int SendInt(const int num);
         int SendLongLong(const long long num);
         
-        void SetSocket(unsigned __int64 socket);
+        void SetSocket(unsigned long long socket);
         unsigned long long GetSocket() const;
         
         ~TcpSocket(){

@@ -4,7 +4,7 @@ namespace rat{
 
     TcpSocket::TcpSocket() = default;;
 
-    TcpSocket::TcpSocket(unsigned __int64 socket): socket_(socket){};
+    TcpSocket::TcpSocket(unsigned long long socket): socket_(socket){};
 
     bool TcpSocket::Disconnected() const
     {
@@ -110,7 +110,7 @@ namespace rat{
         return SafeSend(c, 8);
     }
     
-    void TcpSocket::SetSocket(unsigned __int64 socket)
+    void TcpSocket::SetSocket(unsigned long long socket)
     {
         Close();
         socket_ = socket;
@@ -124,7 +124,11 @@ namespace rat{
 
     void TcpSocket::Close()
     {
-        closesocket(socket_);
+        #ifdef _WIN32
+            closesocket(socket_);
+        #elif __linux__
+            close(socket_);
+        #endif
         socket_ = INVALID_SOCKET;
     }
 }

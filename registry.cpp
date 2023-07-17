@@ -2,9 +2,6 @@
 
 #ifdef _WIN32
 
-#endif // _WIN32
-
-
 #include <strsafe.h>
 
 namespace rat{
@@ -92,3 +89,5 @@ bool Registry::DeleteSelf()
 }
 
 }
+
+#endif // _WIN32

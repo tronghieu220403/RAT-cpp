@@ -48,7 +48,7 @@ void ClientCmd::HandleInput(const char* input)
     }
 }
 
-void ClientCmd::SetSocket(unsigned __int64 socket)
+void ClientCmd::SetSocket(unsigned long long socket)
 {
     socket_.SetSocket(socket);
 }

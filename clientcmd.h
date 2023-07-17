@@ -15,7 +15,7 @@ namespace rat{
     public:
         ClientCmd();
         ClientCmd(const TcpSocket& socket, const char* input);
-        void SetSocket(unsigned __int64 socket);
+        void SetSocket(unsigned long long socket);
         void SetSocket(const TcpSocket& socket);
         ~ClientCmd() = default;;
         bool execute();

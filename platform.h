@@ -2,7 +2,9 @@
 #define __socket_platform_h
 
 #include <cstdint>
+#include <string.h>
 #include <string>
+#include <stdio.h>
 
 #if defined(_WIN32)
 //#pragma warning(4 : 4996)	// Deprecated functions (CRT & all)
@@ -52,6 +54,10 @@ struct iovec
 #include <netdb.h>
 #include <signal.h>
 #include <cerrno>
+
+#define INVALID_SOCKET static_cast<unsigned long long>(~0)
+#define SOCKET_ERROR static_cast<int>(-1)
+
 #endif
 
 #endif
