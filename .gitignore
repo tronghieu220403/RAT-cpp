@@ -48,3 +48,6 @@
 *.filters
 *.vcxproj
 *.sln
+*.db-wal
+*.db-shm
+*.opendb
