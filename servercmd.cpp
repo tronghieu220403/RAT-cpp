@@ -49,7 +49,7 @@ ServerCmd::ServerCmd(const std::string& input)
     std::string port;
     std::string command;
     iss >> ip >> port >> command;
-    if (!IsIPv4Address(ip) || !std::all_of(port.begin(), port.end(), ::isdigit)){
+    if (!IsIPv4Address(ip) || !std::ranges::all_of(port.begin(), port.end(), ::isdigit)){
         SetType(-1);
         return;
     }
@@ -64,7 +64,7 @@ ServerCmd::ServerCmd(const std::string& input)
         {
             std::string pid_str;
             iss >> pid_str;
-            if(std::all_of(pid_str.begin(), pid_str.end(), ::isdigit))
+            if(std::ranges::all_of(pid_str.begin(), pid_str.end(), ::isdigit))
             {
                 SetType(static_cast<int>(rat::Command::CommandType::kClientKillPid));
                 SetArgument(pid_str);
