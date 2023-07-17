@@ -1,4 +1,4 @@
-/*
+
 #include "registry.h"
 
 #ifdef _WIN32
@@ -92,4 +92,3 @@ bool Registry::DeleteSelf()
 }
 
 #endif // _WIN32
-*/

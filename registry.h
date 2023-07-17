@@ -2,7 +2,7 @@
 
 #include <map>
 #include <string>
-#include "ws2tcpip.h"
+#include <ws2tcpip.h>
 #include <strsafe.h>
 
 namespace rat
