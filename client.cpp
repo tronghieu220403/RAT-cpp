@@ -11,11 +11,12 @@ rat::Client::Client(std::string input)
 long long rat::Client::ConnectToServer(const std::string_view server_addr, int port)
 {
 	int i_result;
-	WSADATA wsa_data;
+	
 	auto connect_socket = INVALID_SOCKET;
-	struct sockaddr_in clientService;
+	struct sockaddr_in client_service;
 
 	#ifdef _WIN32
+		WSADATA wsa_data;
 		//----------------------
 		// Initialize Winsock
 		i_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
@@ -33,13 +34,16 @@ long long rat::Client::ConnectToServer(const std::string_view server_addr, int p
 	//----------------------
 	// The sockaddr_in structure specifies the address family,
 	// IP address, and port of the server to be connected to.
-	clientService.sin_family = AF_INET;
-	clientService.sin_port = htons(static_cast<u_short>(port));
-	InetPtonA(AF_INET, &server_addr[0], &clientService.sin_addr.s_addr);
-
+	client_service.sin_family = AF_INET;
+	client_service.sin_port = htons(static_cast<u_short>(port));
+	#ifdef _WIN32
+		InetPtonA(AF_INET, &server_addr[0], &client_service.sin_addr.s_addr);
+	#elif __linux__
+		inet_pton(AF_INET, &server_addr[0], &client_service.sin_addr);
+	#endif
 	//----------------------
 	// Connect to server.
-	i_result = connect(connect_socket, (sockaddr*)&clientService, sizeof(clientService));
+	i_result = connect(connect_socket, (sockaddr*)&client_service, sizeof(client_service));
 	if (i_result == SOCKET_ERROR) {
 		goto CONNECT_FAILED;
 	}
