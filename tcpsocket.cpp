@@ -42,7 +42,6 @@ namespace rat{
             {
                 disconnected_ = true;
                 return -1;
-                break;
             }
             else
             {
