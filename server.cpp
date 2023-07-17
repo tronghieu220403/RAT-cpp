@@ -30,14 +30,14 @@ int Server::CreateLocalServer()
 	// Resolve the server address and port
 	i_result = getaddrinfo(0, &(std::to_string(kDefaultPort))[0], &hints, &result);
 	if (i_result != 0) {
-		goto CREATE_FAIL;
+		goto CREATE_FAILED;
 	}
 
 	// Create a SOCKET for the server to listen for client connections.
 	listen_socket_ = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (listen_socket_ == INVALID_SOCKET) {
 		freeaddrinfo(result);
-		goto CREATE_FAIL;
+		goto CREATE_FAILED;
 	}
 
 	// Setup the TCP listening socket
@@ -49,13 +49,13 @@ int Server::CreateLocalServer()
 		#elif __linux__
 			close(listen_socket_);
 		#endif
-		goto CREATE_FAIL;
+		goto CREATE_FAILED;
 	}
 
 	freeaddrinfo(result);
     return 0;
 
-	CREATE_FAIL:
+	CREATE_FAILED:
 		#ifdef _WIN32
 			WSACleanup();
 			return WSAGetLastError();
