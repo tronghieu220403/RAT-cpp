@@ -1,11 +1,8 @@
-#pragma once
-
-#include <string>
-
 #ifndef __socket_platform_h
 #define __socket_platform_h
 
 #include <cstdint>
+#include <string>
 
 #if defined(_WIN32)
 //#pragma warning(4 : 4996)	// Deprecated functions (CRT & all)
