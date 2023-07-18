@@ -125,22 +125,27 @@ namespace rat{
             return -1;
         }
         std::error_code err;
-        if (std::filesystem::path(file_path_).has_parent_path()) 
+        std::string file_name = file_path_.substr(file_path_.rfind('\\')+ 1).substr(file_path_.rfind('/')+ 1);
+        std::string dir_path = file_path_.substr(0, file_path_.rfind('\\')).substr(0, file_path_.rfind('/'));
+        if (file_name == dir_path)
         {
-            std::filesystem::path dir_path = std::filesystem::path(file_path_).parent_path();
+            dir_path = "";
+        }
+        if (dir_path.size() > 0) 
+        {
             std::filesystem::create_directories(dir_path, err);
             if (!std::filesystem::exists(dir_path))
             {
                 global_mutex.lock();
-                std::cout << "Fail to create folder for " + file_path_ << ".\nWrite file to current path\n";
+                std::cout << "Fail to create folder for " + file_path_ << ".\nWrite file to current path\n" << std::flush;
                 global_mutex.unlock();
-                file_path_ = std::filesystem::path(file_path_).filename().string();
+                file_path_ = file_name;
             }
         }
         if (this->Exists())
         {
             global_mutex.lock();
-            std::cout << "File is already exists. The system deleted this file for new \n";
+            std::cout << "File is already exists. The system deleted this file for new \n" << std::flush;
             global_mutex.unlock();
             this->Remove();
         }
