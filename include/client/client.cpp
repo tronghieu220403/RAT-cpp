@@ -50,7 +50,7 @@ long long rat::Client::ConnectToServer()
 		}
 		#ifdef _WIN32
 			WSACleanup();
-			return WSAGetLastError();
+			return static_cast<long long>(WSAGetLastError() == 0 ? -1 : WSAGetLastError());
 		#elif __linux__
 			return i_result;
 		#endif //

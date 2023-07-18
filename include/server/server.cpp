@@ -81,8 +81,8 @@ int Server::Listen()
 {
 	if (sock_.GetSocket() == INVALID_SOCKET) return -1;
 	#ifdef _WIN32
-		if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
-			std::cout << "Failed to listen on socket. errno: " << WSAGetLastError() << std::endl << std::flush;
+		if (listen(sock_.GetSocket(), GetMaxClient()) == SOCKET_ERROR) {
+			std::cout << "Failed to listen on socket. Error: " << WSAGetLastError() << std::endl << std::flush;
 			WSACleanup();
 			Clean();
 			return -1;

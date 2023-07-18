@@ -27,7 +27,6 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
 *.vsidx
@@ -53,3 +52,6 @@
 *.opendb
 *.iobj
 *.ipdb
+
+#folder
+/x64/**
