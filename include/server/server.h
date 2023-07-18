@@ -36,7 +36,6 @@ namespace rat{
 
         ServerInput() = default;
         void TakeUserInput() const;
-
     };
     
     class HandleConnections
