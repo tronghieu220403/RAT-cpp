@@ -13,7 +13,7 @@ This is a small single server - multi clients TCP communication via IPv4, works 
 Problem
 -------
 
-Write RAT software: the server commands the client to perform tasks: 
+Write a RAT software where the server will command its clients to perform the following tasks: 
 - Get a file.
 - Kill a process.
 - Delete a registry.
