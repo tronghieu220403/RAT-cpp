@@ -1,10 +1,9 @@
 #pragma once
-#include "platform.h"
-#include "servercmd.h"
+#include "socket/platform.h"
+#include "command/servercmd.h"
 #include <map>
 #include <queue>
 #include <iostream>
-#include <thread>
 
 namespace rat{
     

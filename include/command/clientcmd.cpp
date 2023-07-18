@@ -1,6 +1,6 @@
 #pragma once
 
-#include "clientcmd.h"
+#include "command/clientcmd.h"
 
 namespace rat
 {

@@ -1,11 +1,11 @@
 #pragma once
-#include "handleclient.h"
+#include "server/handleclient.h"
 
 namespace rat{
 
 HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr): client_socket_(client_socket)
 {
-	
+	sock = TcpSocket(client_socket_);
 	std::string ip_addr;
 	ip_addr.resize((long long)20);
 	ip = inet_ntop(AF_INET, &client_addr.sin_addr, &ip_addr[0], 20);
@@ -19,11 +19,10 @@ HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_
 
 void HandleClient::ControlClient()
 {
-	if (client_socket_ == 0)
+	if (sock.GetSocket() == INVALID_SOCKET)
 	{
 		return;
 	}
-	TcpSocket sock(client_socket_);
 
 	while(true){
 		sock.SafeSend("", 0);

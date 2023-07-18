@@ -1,6 +1,5 @@
 #pragma once
-#include "platform.h"
-#include "server.h"
+#include "server/server.h"
 
 #include <iostream>
 #include <chrono>

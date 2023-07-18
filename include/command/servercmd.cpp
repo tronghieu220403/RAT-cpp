@@ -1,5 +1,5 @@
 #pragma once
-#include "servercmd.h"
+#include "command/servercmd.h"
 
 namespace rat{
 

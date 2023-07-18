@@ -1,7 +1,5 @@
 #pragma once
 
-#include "platform.h"
-#include "tcpsocket.h"
 #include "clientcmd.h"
 
 namespace rat{

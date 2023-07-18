@@ -1,6 +1,6 @@
 #pragma once
 
-#include "registry.h"
+#include "registry/registry.h"
 
 #ifdef _WIN32
 

@@ -1,9 +1,7 @@
 #pragma once
-#include "platform.h"
-#include "servercmd.h"
-#include <map>
-#include <queue>
-#include <iostream>
+#include "socket/tcpsocket.h"
+#include "command/servercmd.h"
+#include "server/serverinput.h"
 #include <thread>
 
 namespace rat{
@@ -11,7 +9,7 @@ namespace rat{
     class HandleClient
     {
         private:
-        unsigned long long client_socket_ = INVALID_SOCKET;
+        TcpSocket sock;
         std::string ip;
 	    std::string port;
 	    std::string address;

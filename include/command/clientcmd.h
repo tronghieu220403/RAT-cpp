@@ -1,8 +1,12 @@
 #pragma once
 
-#include "command.h"
-#include "tcpsocket.h"
-#include "file.h"
+#include "command/command.h"
+#include "socket/tcpsocket.h"
+#include "file/file.h"
+#include "process/process.h"
+#ifdef _WIN32
+#include "registry/registry.h"
+#endif
 #include <string.h>
 #include <iostream>
 #include <vector>

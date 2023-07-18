@@ -1,5 +1,5 @@
 #pragma once
-#include "serverinput.h"
+#include "server/serverinput.h"
 
 namespace rat{
 

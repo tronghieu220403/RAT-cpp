@@ -2,11 +2,6 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
-#include "process.h"
-#ifdef _WIN32
-#include "registry.h"
-#endif
-#include "file.h"
 
 namespace rat{
 
