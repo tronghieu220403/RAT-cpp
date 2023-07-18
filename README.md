@@ -55,8 +55,8 @@ Folder structure
 ```
 .
 ├── src              
-│   └── client.cpp                                        # code for client
-│   └── server.cpp                                        # code for server
+│   └── client_main.cpp                                        # code for client
+│   └── server_main.cpp                                        # code for server
 │   │
 ├── inlucde
 │   └── client                                            # dependencies for client
@@ -95,11 +95,11 @@ Folder structure
 ├── release              
 │   └── x64
 │   │   └── Linux                               # executable file for server and client on Linux
-│   │   │   └── client			
-│   │   │   └── server			
+│   │   │   └── client_main		
+│   │   │   └── server_main			
 │   │   └── Windows                             # executable file for server and client on Windows
-│   │   │   └── client.exe			
-│   │   │   └── server.exe			
+│   │   │   └── client_main.exe			
+│   │   │   └── server_main.exe			
 ```
 
 
