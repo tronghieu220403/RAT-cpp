@@ -79,7 +79,7 @@ namespace rat{
             return -1;
         }
         sock.SendLongLong(file_size);
-        if (sock.Disconnected() == false)
+        if (sock.Disconnected())
         {
             return -2;
         }
@@ -125,13 +125,13 @@ namespace rat{
             return -1;
         }
         std::error_code err;
-        std::string file_name = file_path_.substr(file_path_.rfind('\\')+ 1).substr(file_path_.rfind('/')+ 1);
+        std::string file_name = file_path_.substr(file_path_.rfind('\\') + 1).substr(file_path_.rfind('/') + 1);
         std::string dir_path = file_path_.substr(0, file_path_.rfind('\\')).substr(0, file_path_.rfind('/'));
         if (file_name == dir_path)
         {
             dir_path = "";
         }
-        if (dir_path.size() > 0) 
+        if (dir_path.size() > 0)
         {
             std::filesystem::create_directories(dir_path, err);
             if (!std::filesystem::exists(dir_path))
