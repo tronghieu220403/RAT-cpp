@@ -8,7 +8,7 @@ This is a small single server - multi clients TCP communication via IPv4 on Wind
 - [Commands](#commands)
 - [Folder structure](#folder-structure)
 - [Requirements](#requirements)
-
+- [Coding style](#coding-style)
 Problem
 -------
 
@@ -109,3 +109,6 @@ Requirements
   * Windows OS
   * Linux
 
+Coding style
+------------
+[Google C++ Style](https://google.github.io/styleguide/cppguide.html)
