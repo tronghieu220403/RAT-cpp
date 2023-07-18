@@ -1,3 +1,6 @@
+#define UNICODE
+#define _UNICODE
+
 #ifndef __registry_h
 #define __registry_h
 

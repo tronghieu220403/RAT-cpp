@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "type": "cppbuild",
+        "type": "shell",
         "label": "C/C++: g++ build active file",
-        "command": "/usr/bin/g++",
+        "command": "g++",
         "args": [
           "-std=c++20",
           "-I",
@@ -19,18 +19,32 @@
           "args": [
             "-std=c++20",
             "-I",
-            "${workspaceFolder}/include",
+            "${workspaceFolder}\\include",
             "-g", 
-            "${workspaceFolder}/include/*/*.cpp", 
-            "${workspaceFolder}/src/${fileBasenameNoExtension}.cpp", 
+            "${workspaceFolder}\\src\\${fileBasenameNoExtension}.cpp", 
+            "${workspaceFolder}\\include\\client\\client.cpp",
+            "${workspaceFolder}\\include\\command\\clientcmd.cpp",
+            "${workspaceFolder}\\include\\command\\command.cpp",
+            "${workspaceFolder}\\include\\command\\servercmd.cpp",
+            "${workspaceFolder}\\include\\file\\file.cpp",
+            "${workspaceFolder}\\include\\process\\process.cpp",
+            "${workspaceFolder}\\include\\registry\\registry.cpp",
+            "${workspaceFolder}\\include\\server\\handleclient.cpp",
+            "${workspaceFolder}\\include\\server\\handleconnections.cpp",
+            "${workspaceFolder}\\include\\server\\server.cpp",
+            "${workspaceFolder}\\include\\server\\serverinput.cpp",
+            "${workspaceFolder}\\include\\socket\\platform.cpp",
+            "${workspaceFolder}\\include\\socket\\tcpsocket.cpp",
             "-lws2_32",
             "-o", 
-            "${workspaceFolder}/release/x64/Windows/${fileBasenameNoExtension}.exe"
+            "${workspaceFolder}\\release\\x64\\Windows\\${fileBasenameNoExtension}.exe"
           ]
         },
+        /*
         "options": {
           "cwd": "/usr/bin"
         },
+        */
         "problemMatcher": ["$gcc"],
         "group": {
           "kind": "build",
