@@ -33,7 +33,7 @@ The following are some things to be aware of, along with my solutions:
 * Transfer file over TCP: 
 	* We will **split the files into smaller pieces of data** and then send them in order. 
 	* The server's data receiving speed may be faster than the client's sending speed, so each time we receive data, we will wait until we have received the desired number of bytes.
-	* The client will tell the server about the file's size. If the size if `-1` or the server can not create file, stop the operation. Otherwise, start sending data.
+	* The client will tell the server about the file's size. If the size if `-1`, stop the operation. Otherwise, start sending data.
 
 Features
 ---
@@ -99,7 +99,9 @@ Folder structure
 │   │   │   └── server_main			
 │   │   └── Windows                             # executable file for server and client on Windows
 │   │   │   └── client_main.exe			
-│   │   │   └── server_main.exe			
+│   │   │   └── server_main.exe
+│   │
+────────────	
 ```
 
 
@@ -107,7 +109,7 @@ Requirements
 ---
 * C++ 20
 * Supported Operating Systems (64-bit)
-  * Windows OS
+  * Windows
   * Linux
 
 Coding style
