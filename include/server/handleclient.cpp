@@ -1,4 +1,3 @@
-#pragma once
 #include "server/handleclient.h"
 
 namespace rat{

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __tcp_socket_h
+#define __tcp_socket_h
 
 #include "socket/platform.h"
 #include <vector>
@@ -34,3 +35,5 @@ namespace rat{
     };
 
 }
+
+#endif

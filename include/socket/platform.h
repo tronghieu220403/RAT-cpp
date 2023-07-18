@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef __socket_platform_h
 #define __socket_platform_h
 

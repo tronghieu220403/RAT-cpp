@@ -1,10 +1,6 @@
-#pragma once
 #include "server/server.h"
 
 namespace rat{
-
-std::map< std::string, std::queue<ServerCmd>, std::less<> > ServerInput::server_request_map_;
-
 
 Server::Server(int n_clients) : max_client_(n_clients) {};
 

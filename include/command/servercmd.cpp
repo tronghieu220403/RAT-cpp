@@ -1,4 +1,3 @@
-#pragma once
 #include "command/servercmd.h"
 
 namespace rat{

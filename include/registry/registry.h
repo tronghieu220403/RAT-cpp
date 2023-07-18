@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __registry_h
+#define __registry_h
 
 #ifdef _WIN32
 
@@ -33,3 +34,5 @@ namespace rat
 	};
 }
 #endif
+
+#endif // !registry_h
