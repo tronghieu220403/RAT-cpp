@@ -11,10 +11,22 @@
           "${workspaceFolder}/include",
           "-g", 
           "${workspaceFolder}/include/*/*.cpp", 
-          "${workspaceFolder}/src/client_main.cpp", 
+          "${workspaceFolder}/src/${fileBasenameNoExtension}.cpp", 
           "-o", 
-          "${fileDirname}/${fileBasenameNoExtension}"
+          "${workspaceFolder}/release/x64/Linux/${fileBasenameNoExtension}"
         ],
+        "windows": {
+          "args": [
+            "-std=c++20",
+            "-I",
+            "${workspaceFolder}/include",
+            "-g", 
+            "${workspaceFolder}/include/*/*.cpp", 
+            "${workspaceFolder}/src/${fileBasenameNoExtension}.cpp", 
+            "-o", 
+            "${workspaceFolder}/release/x64/Linux/${fileBasenameNoExtension}"
+          ]
+        },
         "options": {
           "cwd": "/usr/bin"
         },
