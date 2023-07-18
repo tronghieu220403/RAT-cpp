@@ -9,7 +9,6 @@ namespace rat{
     private:
         unsigned long long socket_ = INVALID_SOCKET;   
         bool disconnected_ = false;
-        void Close();
     public:
         TcpSocket();
         explicit TcpSocket(unsigned long long socket);
@@ -23,15 +22,16 @@ namespace rat{
 
         unsigned long long RecvUnsignedLongLong();
         unsigned int RecvUnsignedInt();
-        
+        std::vector<char> RecvBytes(int size);     
+
         int SendBytes(const char* buffer, int size);
         int SendBytes(std::vector<char> v);
         int SendInt(const int num);
         int SendLongLong(const long long num);
         
-        void SetSocket(unsigned long long socket);
+        //void SetSocket(unsigned long long socket);
         unsigned long long GetSocket() const;
-        
+        void Close();
         ~TcpSocket(){
             Close();
         };

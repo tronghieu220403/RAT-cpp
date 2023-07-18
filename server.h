@@ -12,7 +12,7 @@ namespace rat{
     private:
         static std::string ip_address_;
         int port_ = kDefaultPort;
-        unsigned long long listen_socket_ = INVALID_SOCKET;
+        TcpSocket sock_;
         int max_client_ = 1;
     public:
         static std::mutex mt;
@@ -26,13 +26,6 @@ namespace rat{
         unsigned long long GetListenSocket();
         int GetMaxClient();
         ~Server(){
-            if (listen_socket_ != INVALID_SOCKET){
-                #ifdef _WIN32
-                    closesocket(listen_socket_);
-                #elif __linux__
-                    close(listen_socket_);
-                #endif
-            }
             Clean();
         };
     };

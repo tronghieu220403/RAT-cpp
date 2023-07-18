@@ -21,7 +21,7 @@ namespace rat{
             }
             bytes_recv = recv(socket_, buf, len, 0);
             if (bytes_recv <= 0){
-                disconnected_ = true;
+                Close();
                 break;
             }
             else{
@@ -40,7 +40,7 @@ namespace rat{
             bytes_send = send(socket_, buf, len, 0);
             if (bytes_send < 0 || (bytes_send == 0 && len > 0))
             {
-                disconnected_ = true;
+                Close();
                 return -1;
             }
             else
@@ -85,6 +85,19 @@ namespace rat{
         return *((unsigned long long*)buffer);
     }
 
+    std::vector<char> TcpSocket::RecvBytes(int size)
+    {
+    	std::vector<char> v;
+    	v.resize(size);
+    	char *buffer = &*v.begin();
+        if (SafeRecv(buffer, size) != size)
+        {
+            v.clear();
+            return v;
+        }
+        return v;
+    }
+
     int TcpSocket::SendBytes(const char* buffer, int size)
     {
         return SafeSend(buffer, size);
@@ -109,12 +122,14 @@ namespace rat{
         return SafeSend(c, 8);
     }
     
+    /*
     void TcpSocket::SetSocket(unsigned long long socket)
     {
         Close();
         socket_ = socket;
         disconnected_ = false;
     }
+    */
 
     unsigned long long TcpSocket::GetSocket() const
     {
@@ -123,11 +138,15 @@ namespace rat{
 
     void TcpSocket::Close()
     {
-        #ifdef _WIN32
-            closesocket(socket_);
-        #elif __linux__
-            close(socket_);
-        #endif
+        if (disconnected_ == false)
+        {
+            #ifdef _WIN32
+                closesocket(socket_);
+            #elif __linux__
+                close(socket_);
+            #endif
+        }
+        disconnected_ = true;
         socket_ = INVALID_SOCKET;
     }
 }

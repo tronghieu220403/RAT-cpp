@@ -11,11 +11,10 @@ namespace rat{
     {
     private:
         TcpSocket socket_;
-        void HandleInput(const char* input);
+        void HandleInput(const char* input, int size);
     public:
         ClientCmd();
-        ClientCmd(const TcpSocket& socket, const char* input);
-        void SetSocket(unsigned long long socket);
+        ClientCmd(const TcpSocket& socket, const char* input, int size);
         void SetSocket(const TcpSocket& socket);
         ~ClientCmd() = default;;
         bool execute();
