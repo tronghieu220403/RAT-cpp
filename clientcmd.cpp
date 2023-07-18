@@ -22,14 +22,10 @@ void ClientCmd::HandleInput(const char* input, int size)
     // Get address and port here in input;
 
     SetType(-1);
-    if (size <= 8){
+    if (size <= 4){
         return;
     }
-    if (int cmd_sz = *((int*)input); cmd_sz <= 8)
-    {
-        return;
-    }
-    if (int type = *((int *)(input + 4)); type == static_cast<int>(kClientKillPid))
+    if (int type = *((int *)(input)); type == static_cast<int>(kClientKillPid))
     {
         SetType(static_cast<int>(kClientKillPid));
     }
@@ -49,7 +45,7 @@ void ClientCmd::HandleInput(const char* input, int size)
     #endif
     if (GetType() != -1)
     {
-        SetArgument(input + 8);
+        SetArgument(input + 4);
     }
 }
 
