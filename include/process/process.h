@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __process_h
+#define __process_h
 
 #if defined(_WIN32)
 	#include <WS2tcpip.h>
@@ -31,3 +32,5 @@ namespace rat
 
 	};
 }
+
+#endif

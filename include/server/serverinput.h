@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __server_input_h
+#define __server_input_h
+
 #include "socket/platform.h"
 #include "command/servercmd.h"
 #include <map>
@@ -17,3 +19,4 @@ namespace rat{
     };
 
 }
+#endif

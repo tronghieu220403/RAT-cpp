@@ -1,5 +1,3 @@
-#pragma once
-
 #include "command/clientcmd.h"
 
 namespace rat
@@ -33,16 +31,16 @@ void ClientCmd::HandleInput(const char* input, int size)
     {
         SetType(static_cast<int>(kClientKillProcessName));
     }
+    #ifdef _WIN32
     else if (type == static_cast<int>(kClientDeleteRegistry))
     {
         SetType(static_cast<int>(kClientDeleteRegistry));
     }
-    #ifdef _WIN32
+    #endif
     else if (type == static_cast<int>(kClientSendFile))
     {
         SetType(static_cast<int>(kClientSendFile));
     }
-    #endif
     if (GetType() != -1)
     {
         SetArgument(input + 4);

@@ -1,6 +1,7 @@
-#pragma once
+#ifndef __client_h
+#define __client_h
 
-#include "clientcmd.h"
+#include "command/clientcmd.h"
 
 namespace rat{
 
@@ -23,3 +24,5 @@ namespace rat{
     };
     
 }
+
+#endif

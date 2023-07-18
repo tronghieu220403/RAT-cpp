@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __handle_connections_h
+#define __handle_connections_h
+
 #include "socket/platform.h"
 #include "server/serverinput.h"
 #include <thread>
@@ -17,3 +19,5 @@ namespace rat{
     };
 
 }
+
+#endif

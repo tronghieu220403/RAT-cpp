@@ -1,4 +1,3 @@
-#pragma once
 #include "command/command.h"
 
 namespace rat{

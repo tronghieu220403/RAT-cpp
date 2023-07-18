@@ -1,4 +1,3 @@
-#pragma once
 #include "command/servercmd.h"
 
 namespace rat{
@@ -51,7 +50,7 @@ ServerCmd::ServerCmd(const std::string& input)
     std::string command;
     std::string subcommand;
     iss >> ip >> port >> command >> subcommand;
-    if (!IsIPv4Address(ip) || !std::ranges::all_of(port.begin(), port.end(), ::isdigit)){
+    if (!IsIPv4Address(ip) || !std::all_of(port.begin(), port.end(), ::isdigit)){
         return;
     }
     ip_address_ = ip;
@@ -62,7 +61,7 @@ ServerCmd::ServerCmd(const std::string& input)
         {
             std::string pid_str;
             iss >> pid_str;
-            if(std::ranges::all_of(pid_str.begin(), pid_str.end(), ::isdigit))
+            if(std::all_of(pid_str.begin(), pid_str.end(), ::isdigit))
             {
                 SetType(static_cast<int>(rat::Command::CommandType::kClientKillPid));
                 SetArgument(pid_str);

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "socket/tcpsocket.h"
 
 namespace rat{

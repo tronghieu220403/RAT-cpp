@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __client_cmd_h
+#define __client_cmd_h
 
 #include "command/command.h"
 #include "socket/tcpsocket.h"
@@ -25,6 +26,7 @@ namespace rat{
         ~ClientCmd() = default;;
         bool execute();
     };
-    
-    
+        
 }
+
+#endif // !__client_cmd_h

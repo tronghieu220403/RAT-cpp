@@ -1,7 +1,9 @@
-#pragma once
+#ifndef __server_h
+#define __server_h
+
 #include "socket/platform.h"
 #include "command/servercmd.h"
-#include "server/handleclients.h"
+#include "server/handleclient.h"
 #include "server/handleconnections.h"
 #include "server/serverinput.h"
 
@@ -26,6 +28,7 @@ namespace rat{
         unsigned long long GetListenSocket() const;
         int GetMaxClient() const;
         int GetPort() const;
-    };
-    
+    };    
 }
+
+#endif // !__server_h

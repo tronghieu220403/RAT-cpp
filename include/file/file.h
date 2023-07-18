@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __file_h
+#define __file_h
+
 #include "socket/tcpsocket.h"
 #include <cstring>
 #include <string>
@@ -33,3 +35,5 @@ namespace rat
 	};
 
 }
+
+#endif

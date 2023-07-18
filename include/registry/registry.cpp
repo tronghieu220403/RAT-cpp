@@ -1,5 +1,3 @@
-#pragma once
-
 #include "registry/registry.h"
 
 #ifdef _WIN32

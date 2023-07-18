@@ -1,7 +1,10 @@
-#pragma once
+#ifndef __handle_client_h
+#define __handle_client_h
+
 #include "socket/tcpsocket.h"
 #include "command/servercmd.h"
 #include "server/serverinput.h"
+#include "file/file.h"
 #include <thread>
 
 namespace rat{
@@ -19,3 +22,5 @@ namespace rat{
         void ControlClient();
     };
 }
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __command_h
+#define __command_h
+
 #include <string.h>
 #include <iostream>
 #include <vector>
@@ -28,6 +30,7 @@ namespace rat{
         void SetArgument(const std::string_view& argument);
         ~Command() = default;;
     };
-    
-    
+        
 }
+
+#endif // !__command_h
