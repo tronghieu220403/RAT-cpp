@@ -147,7 +147,7 @@ namespace rat{
         if (this->Exists())
         {
             global_mutex.lock();
-            std::cout << "File is already exists. The system deleted this file for new \n";
+            std::cout << "File is already exists. The system deleted this file for new file writing. \n" << std::flush;
             global_mutex.unlock();
             this->Remove();
         }
