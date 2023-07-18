@@ -5,12 +5,16 @@ namespace rat{
 
     File::File() = default;
 
-    File::File(const std::string_view& file_path): file_path_(file_path){}
+    File::File(const std::string_view& file_path)
+    {
+        file_path_ = file_path;
+        std::replace(file_path_.begin(), file_path_.end(), '\\', '/');
+    }
 
     void File::SetFilePath(std::string_view file_path)
     {
         file_path_ = file_path;
-        std::replace(file_path_.begin(), file_path_.end(), '\\', '/');
+        std::replace(file_path_.begin(), file_path_.end(), '\\', '/');   
     }
 
     int File::Remove()
