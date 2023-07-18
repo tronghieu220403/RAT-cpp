@@ -14,6 +14,11 @@ Server::Server(int n_clients)
 
 int Server::CreateLocalServer()
 {
+	return CreateLocalServer(kDefaultPort);
+}
+
+int Server::CreateLocalServer(int port)
+{
     int i_result;
 	struct addrinfo* result = 0;
 	unsigned long long listen_socket;
@@ -35,7 +40,7 @@ int Server::CreateLocalServer()
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the server address and port
-	i_result = getaddrinfo(0, &(std::to_string(kDefaultPort))[0], &hints, &result);
+	i_result = getaddrinfo(0, &(std::to_string(port))[0], &hints, &result);
 	if (i_result != 0) {
 		goto CREATE_FAILED;
 	}
@@ -46,7 +51,8 @@ int Server::CreateLocalServer()
 		freeaddrinfo(result);
 		goto CREATE_FAILED;
 	}
-
+	
+	port_ = port;
 	// Setup the TCP listening socket
 	i_result = bind(listen_socket, result->ai_addr, (int)result->ai_addrlen);
 	#ifdef _WIN32
@@ -75,6 +81,7 @@ int Server::CreateLocalServer()
 			return WSAGetLastError();
 		#elif __linux__
 			return i_result;
+		port_ = -1;
 		#endif
 
 }
@@ -89,6 +96,7 @@ int Server::Listen()
 		}
 	#else
     	if (listen(sock_.GetSocket(), GetMaxClient()) < 0) {
+    		std::cout << "Failed to listen on socket. errno: " << errno << std::endl;
 			Clean();
 			return -1;
 		}
@@ -97,12 +105,17 @@ int Server::Listen()
 	return 0;
 }
 
-unsigned long long Server::GetListenSocket()
+unsigned long long Server::GetListenSocket() const
 {
 	return sock_.GetSocket();
 }
 
-int Server::GetMaxClient()
+int Server::GetPort() const
+{
+	return port_;
+}
+
+int Server::GetMaxClient() const
 {
 	return max_client_;
 }
