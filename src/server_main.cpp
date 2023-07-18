@@ -5,6 +5,7 @@
 #include <thread>
 using namespace std;
 
+/*
 int main() {
     if (rat::Server server(1000); server.CreateLocalServer() == 0)
     {
@@ -19,3 +20,4 @@ int main() {
     }
     return 0;
 }
+*/

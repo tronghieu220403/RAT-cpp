@@ -11,13 +11,16 @@ int main()
     int port;
     std::cout << "Server IP and port: " << std::endl;
     std::cin >> client_addr >> port;
-    rat::Client client("client_addr", port);
+    rat::Client client(client_addr, port);
     //rat::Client client("192.168.1.5", 27015);
 
     if (client.ConnectToServer() == 0)
     {
         std::cout << "Connected to " << client.GetServerAddress() << ", port " << client.GetServerPort() << std::endl;
         client.ReceiveCommand();
+    }
+    else{
+        std::cout << "Can not connect to " << client.GetServerAddress() << ", port " << client.GetServerPort() << std::endl;
     }
 }
 
