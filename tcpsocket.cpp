@@ -1,10 +1,12 @@
+#pragma once
+
 #include "tcpsocket.h"
 
 namespace rat{
 
-    TcpSocket::TcpSocket() = default;;
+    TcpSocket::TcpSocket() = default;
 
-    TcpSocket::TcpSocket(unsigned long long socket): socket_(socket){};
+    TcpSocket::TcpSocket(const unsigned long long socket): socket_(socket){};
 
     bool TcpSocket::Disconnected() const
     {
@@ -15,18 +17,22 @@ namespace rat{
         int ori_len = len;
         int bytes_recv = 0;
         while(true){
-            if (len == 0) {
+            if (len == 0) 
+            {
                 bytes_recv = ori_len;
                 break;
             }
-            bytes_recv = recv(socket_, buf, len, 0);
-            if (bytes_recv <= 0){
-                Close();
-                break;
-            }
-            else{
-                buf = buf + bytes_recv;
-                len = len - bytes_recv;
+            if (len != 0)
+            {
+                bytes_recv = recv(socket_, buf, len, 0);
+                if (bytes_recv <= 0) {
+                    Close();
+                    break;
+                }
+                else {
+                    buf = buf + bytes_recv;
+                    len = len - bytes_recv;
+                }
             }
         }
         return bytes_recv;
@@ -89,8 +95,7 @@ namespace rat{
     {
     	std::vector<char> v;
     	v.resize(size);
-    	char *buffer = &*v.begin();
-        if (SafeRecv(buffer, size) != size)
+        if (char *buffer = std::to_address(v.begin()); SafeRecv(buffer, size) != size)
         {
             v.clear();
             return v;
@@ -122,15 +127,6 @@ namespace rat{
         return SafeSend(c, 8);
     }
     
-    /*
-    void TcpSocket::SetSocket(unsigned long long socket)
-    {
-        Close();
-        socket_ = socket;
-        disconnected_ = false;
-    }
-    */
-
     unsigned long long TcpSocket::GetSocket() const
     {
         return socket_;

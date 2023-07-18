@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef __socket_platform_h
 #define __socket_platform_h
 
@@ -5,10 +7,14 @@
 #include <string.h>
 #include <string>
 #include <stdio.h>
+#include <mutex>
+
+#include <mutex>
+namespace rat {
+	inline std::mutex global_mutex;
+}
 
 #if defined(_WIN32)
-//#pragma warning(4 : 4996)	// Deprecated functions (CRT & all)
-//#pragma warning(4 : 4250)	// Inheritance via dominance
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -20,8 +26,8 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #endif
 
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 
 #define SOCKPP_SOCKET_T_DEFINED
 using socket_t = SOCKET;

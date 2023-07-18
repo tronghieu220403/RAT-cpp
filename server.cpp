@@ -1,16 +1,12 @@
+#pragma once
 #include "server.h"
 
 namespace rat{
 
-std::mutex Server::mt;
-
 std::map< std::string, std::queue<ServerCmd>, std::less<> > ServerInput::server_request_map_;
 
 
-Server::Server(int n_clients)
-{
-    max_client_ = n_clients;
-}
+Server::Server(int n_clients) : max_client_(n_clients) {};
 
 int Server::CreateLocalServer()
 {
@@ -20,7 +16,7 @@ int Server::CreateLocalServer()
 int Server::CreateLocalServer(int port)
 {
     int i_result;
-	struct addrinfo* result = 0;
+	struct addrinfo* result = nullptr;
 	unsigned long long listen_socket;
 
 	// Initialize Winsock
@@ -40,7 +36,7 @@ int Server::CreateLocalServer(int port)
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the server address and port
-	i_result = getaddrinfo(0, &(std::to_string(port))[0], &hints, &result);
+	i_result = getaddrinfo(nullptr, &(std::to_string(port))[0], &hints, &result);
 	if (i_result != 0) {
 		goto CREATE_FAILED;
 	}
@@ -71,7 +67,6 @@ int Server::CreateLocalServer(int port)
 		}
 
 	sock_ = TcpSocket(listen_socket);
-
 	freeaddrinfo(result);
     return 0;
 
@@ -91,6 +86,8 @@ int Server::Listen()
 	if (sock_.GetSocket() == INVALID_SOCKET) return -1;
 	#ifdef _WIN32
 		if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
+			std::cout << "Failed to listen on socket. errno: " << WSAGetLastError() << std::endl;
+			WSACleanup();
 			Clean();
 			return -1;
 		}
@@ -102,7 +99,8 @@ int Server::Listen()
 		}
 
 	#endif
-	return 0;
+	return 0;	
+
 }
 
 unsigned long long Server::GetListenSocket() const
@@ -130,7 +128,7 @@ void Server::Clean()
     #endif
 }
 
-void ServerInput::TakeUserInput()
+void ServerInput::TakeUserInput() const
 {
 	while(true){
 		std::string command;
@@ -141,9 +139,9 @@ void ServerInput::TakeUserInput()
 			command.pop_back();
 		}
 		if (command.size() > (size_t)900){
-            Server::mt.lock();
+            global_mutex.lock();
 			std::cout << "The command is too long, please try agian." << std::endl;
-            Server::mt.unlock();
+            global_mutex.unlock();
 		}
         if (command.size() >= 4 && command.starts_with("exit"))
         {
@@ -154,7 +152,8 @@ void ServerInput::TakeUserInput()
         {
             continue;
         } 
-        std::string addr = cmd.GetIpAddress() + ":" + std::to_string(cmd.GetPort());
+
+		std::string addr = std::format("{}:{}", cmd.GetIpAddress(), cmd.GetPort());
         if (ServerInput::server_request_map_.contains(addr))
         {
             ServerInput::server_request_map_[addr].push(cmd);
@@ -163,13 +162,9 @@ void ServerInput::TakeUserInput()
 	return;
 }
 
-HandleConnections::HandleConnections(unsigned long long listen_socket, int max_clients)
-{
-	listen_socket_ = listen_socket;
-	max_clients_ = max_clients;
-}
+HandleConnections::HandleConnections(unsigned long long listen_socket, int max_clients) : listen_socket_(listen_socket), max_clients_(max_clients){};
 
-void HandleConnections::AcceptConnections()
+void HandleConnections::AcceptConnections() const
 {
     if (listen_socket_ == 0)
     {
@@ -195,18 +190,18 @@ void HandleConnections::AcceptConnections()
 
 }
 
-HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr)
+HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr): client_socket_(client_socket)
 {
-	client_socket_ = client_socket;
+	
 	std::string ip_addr;
 	ip_addr.resize((long long)20);
 	ip = inet_ntop(AF_INET, &client_addr.sin_addr, &ip_addr[0], 20);
 	port = std::to_string(htons(client_addr.sin_port));
 	address = ip + ":" + port;
-	Server::mt.lock();
+	global_mutex.lock();
 	std::cout << "Client connected: " << address << std::endl;
     ServerInput::server_request_map_[address] = std::queue<ServerCmd>();
-	Server::mt.unlock();
+	global_mutex.unlock();
 }
 
 void HandleClient::ControlClient()
@@ -238,37 +233,38 @@ void HandleClient::ControlClient()
 		}
 	}
 
-	Server::mt.lock();
+	global_mutex.lock();
     ServerInput::server_request_map_.erase(address);
 	std::cout << "Client disconnected: " << address << std::endl;
-	Server::mt.unlock();
+	global_mutex.unlock();
 	return;
 
 }
 
 
-ServerCmd HandleClient::WaitForRequest(std::string address)
+ServerCmd HandleClient::WaitForRequest(std::string address) const
 {
-	Server::mt.lock();
+	global_mutex.lock();
 	auto it = ServerInput::server_request_map_.find(address);
 	if (it == ServerInput::server_request_map_.end()) {
-		Server::mt.unlock();
+		global_mutex.unlock();
 		return ServerCmd();
 	}
 	std::queue<ServerCmd>& my_queue = it->second;
 	long long queue_sz = my_queue.size();
-	Server::mt.unlock();
+	global_mutex.unlock();
 
     // If client has request from the server.
 	if (queue_sz > 0) {
-		Server::mt.lock();
+		global_mutex.lock();
 		ServerCmd s = my_queue.front();
 		my_queue.pop();
-		Server::mt.unlock();
+		global_mutex.unlock();
 		return s;
 	}
 	return ServerCmd();
 
 }
+
 
 }

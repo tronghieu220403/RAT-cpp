@@ -1,3 +1,5 @@
+#pragma once
+#include "platform.h"
 #include "server.h"
 
 #include <iostream>
@@ -6,7 +8,7 @@
 using namespace std;
 
 int main() {
-    if (rat::Server server(1); server.CreateLocalServer(1234) == 0)
+    if (rat::Server server(1); server.CreateLocalServer() == 0)
     {
         cout << "Server created on localhost, port " << server.GetPort() << endl;
         if (server.Listen() != 0){

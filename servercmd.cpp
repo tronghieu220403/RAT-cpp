@@ -1,3 +1,4 @@
+#pragma once
 #include "servercmd.h"
 
 namespace rat{
@@ -37,8 +38,8 @@ ServerCmd::ServerCmd()
 
 ServerCmd::ServerCmd(const std::string& input)
 {
+    SetType(-1);
     if (strlen(&input[0]) >= 990){
-        SetType(-1);
         return;
     }
 
@@ -48,18 +49,15 @@ ServerCmd::ServerCmd(const std::string& input)
     std::string ip;
     std::string port;
     std::string command;
-    iss >> ip >> port >> command;
+    std::string subcommand;
+    iss >> ip >> port >> command >> subcommand;
     if (!IsIPv4Address(ip) || !std::ranges::all_of(port.begin(), port.end(), ::isdigit)){
-        SetType(-1);
         return;
     }
     ip_address_ = ip;
     port_ = std::stoi(port);
     if (command == "kill") 
     {
-        std::string subcommand;
-        iss >> subcommand;
-
         if (subcommand == "pid")
         {
             std::string pid_str;
@@ -68,10 +66,6 @@ ServerCmd::ServerCmd(const std::string& input)
             {
                 SetType(static_cast<int>(rat::Command::CommandType::kClientKillPid));
                 SetArgument(pid_str);
-            }
-            else
-            {
-                SetType(- 1);
             }
         }
         else if (subcommand == "pname") 
@@ -82,47 +76,33 @@ ServerCmd::ServerCmd(const std::string& input)
             SetType(static_cast<int>(rat::Command::CommandType::kClientKillProcessName));
             SetArgument(pname);
         }
-        else 
-        {
-            SetType(-1);
-        }
     }
     else if (command == "delete")
     {
-        std::string subcommand;
         std::string root_key;
         std::string sub_key;
-        iss >> subcommand >> root_key;
+        iss >> root_key;
         iss >> std::ws;
         getline(iss, sub_key);
-        if (!subcommand.size() || !root_key.size() || !sub_key.size())
-        {
-            SetType(-1);
-        }
-        else
+        if (subcommand == "registry" && root_key.size() && sub_key.size())
         {
             SetType(static_cast<int>(rat::Command::CommandType::kClientDeleteRegistry));
-            SetArgument(subcommand + " " + sub_key);
+            SetArgument(root_key + " " + sub_key);
         }
     }
     else if (command == "get")
     {
-        std::string file_path;
-        iss >> std::ws;
-        getline(iss, file_path);
-        if (!file_path.size())
+        if (subcommand == "file")
         {
-            SetType(-1);
+            std::string file_path;
+                iss >> std::ws;
+                getline(iss, file_path);
+                if (file_path.size())
+                {
+                    SetArgument(file_path);
+                    SetType(static_cast<int>(rat::Command::CommandType::kClientSendFile));
+                }
         }
-        else
-        {
-            SetArgument(file_path);
-            SetType(static_cast<int>(rat::Command::CommandType::kClientSendFile));
-        }
-    }
-    else
-    {
-        SetType(-1);
     }
 }
 

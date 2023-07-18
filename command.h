@@ -1,3 +1,4 @@
+#pragma once
 #include <string.h>
 #include <iostream>
 #include <vector>
@@ -27,7 +28,7 @@ namespace rat{
         Command(const int type, const std::string_view& input);
         std::vector<char> ToTcpPacket();
         int GetType() const;
-        std::string GetArgument();
+        std::string GetArgument() const;
         void SetType(int type);
         void SetArgument(const std::string_view& argument);
         ~Command() = default;;

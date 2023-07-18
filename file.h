@@ -20,7 +20,7 @@ namespace rat
         
         void SetFilePath(const std::string_view file_path);
         
-        bool Append(const char* buffer, int size);        
+        bool Append(const char* buffer, int size) const;
         bool Exists() const;
         long long GetFileSize() const;
         int Remove();

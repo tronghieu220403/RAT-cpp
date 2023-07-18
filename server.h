@@ -1,10 +1,12 @@
+#pragma once
 #include "platform.h"
 #include "servercmd.h"
 #include <map>
 #include <queue>
 #include <iostream>
-#include <mutex>
 #include <thread>
+#include <format>
+
 namespace rat{
 
     class Server
@@ -15,10 +17,9 @@ namespace rat{
         TcpSocket sock_;
         int max_client_ = 1;
     public:
-        static std::mutex mt;
         const static int kDefaultPort = 27015;
         Server() = default;
-        Server(int n_clients);
+        explicit Server(int n_clients);
         void Clean();
         int CreateLocalServer();
         int CreateLocalServer(int port);
@@ -27,9 +28,6 @@ namespace rat{
         unsigned long long GetListenSocket() const;
         int GetMaxClient() const;
         int GetPort() const;
-        ~Server(){
-            Clean();
-        };
     };
     
     class ServerInput
@@ -38,7 +36,7 @@ namespace rat{
         static std::map< std::string, std::queue<ServerCmd>, std::less<> > server_request_map_;
 
         ServerInput() = default;
-        void TakeUserInput();
+        void TakeUserInput() const;
 
     };
     
@@ -50,7 +48,7 @@ namespace rat{
         public:
         HandleConnections() = default;
         HandleConnections(unsigned long long listen_socket, int max_clients);
-        void AcceptConnections();
+        void AcceptConnections() const;
     };
 
     class HandleClient
@@ -62,7 +60,7 @@ namespace rat{
 	    std::string address;
         public:
         HandleClient(unsigned long long client_socket, sockaddr_in client_addr);
-        ServerCmd WaitForRequest(std::string address);
+        ServerCmd WaitForRequest(std::string address) const;
         void ControlClient();
     };
 }

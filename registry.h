@@ -1,8 +1,10 @@
+#pragma once
+
 #ifdef _WIN32
 
 #include <map>
 #include <string>
-#include <ws2tcpip.h>
+#include <WS2tcpip.h>
 #include <strsafe.h>
 
 namespace rat

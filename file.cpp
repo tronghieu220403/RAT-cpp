@@ -1,3 +1,4 @@
+#pragma once
 #include "file.h"
 
 namespace rat{
@@ -8,7 +9,7 @@ namespace rat{
 
     void File::SetFilePath(std::string_view file_path)
     {
-        file_path = file_path_;
+        file_path_ = file_path;
     }
 
     int File::Remove()
@@ -43,7 +44,7 @@ namespace rat{
         return size;
     }
 
-    bool File::Append(const char *buffer, int len)
+    bool File::Append(const char *buffer, int len) const
     {
         if(!Exists()){
             return false;
@@ -93,6 +94,7 @@ namespace rat{
             if (sock.Disconnected())
             {
                 status = -2;
+                break;
             }
             else if (readSize < 1000) {
                 status = 0;
@@ -110,7 +112,11 @@ namespace rat{
         if(Exists()){
             Remove();
         }
+
         long long file_size = sock.RecvLongLong();
+        auto received = static_cast <long long>(0);
+        std::ofstream ofs_file; 
+
         if (file_size == -1)
         {
             return -1;
@@ -119,38 +125,46 @@ namespace rat{
             return -1;
         }
         std::error_code err;
-        std::filesystem::create_directories(std::filesystem::path(file_path_).parent_path().string(), err);
-        std::ofstream ofs_file(file_path_, std::ios_base::app | std::ifstream::binary);
-        long long bufferSize = (((static_cast<long long>(1000)) < (file_size)) ? (static_cast<long long>(1000)) : (file_size));
-        auto iRecvResult = static_cast < long long>(0);
-        auto received = static_cast <long long>(0);
-	    auto* buffer = new char[1001];
-        do {
-            memset(buffer, 0, 1001);
-            iRecvResult = sock.SafeRecv(buffer, static_cast<int>(bufferSize));
-            if (iRecvResult > (long long)0)
+        if (std::filesystem::path(file_path_).has_parent_path()) 
+        {
+            std::filesystem::path dir_path = std::filesystem::path(file_path_).parent_path();
+            std::filesystem::create_directories(dir_path, err);
+            if (!std::filesystem::exists(dir_path))
             {
-                Append(buffer, static_cast<int>(bufferSize));
-                received += bufferSize;
-                if (received == file_size) {
-                    break;
-                }
-                bufferSize = (((static_cast<long long>(1000)) < (file_size - received)) ? (static_cast<long long>(1000)) : (file_size - received));
+                global_mutex.lock();
+                std::cout << "Fail to create folder for " + file_path_ << ".\nWrite file to current path\n";
+                global_mutex.unlock();
+                file_path_ = std::filesystem::path(file_path_).filename().string();
+            }
+        }
+        if (this->Exists())
+        {
+            global_mutex.lock();
+            std::cout << "File is already exists. The system deleted this file for new \n";
+            global_mutex.unlock();
+            this->Remove();
+        }
+        ofs_file = std::ofstream(file_path_, std::ios_base::app | std::ifstream::binary);
+        long long buffer_size = (((static_cast<long long>(1000)) < file_size) ? (static_cast<long long>(1000)) : file_size);
+        do {
+            if (std::vector<char> v = sock.RecvBytes(static_cast<int>(buffer_size)); v.size() > (long long)0)
+            {
+                Append(std::to_address(v.begin()), static_cast<int>(v.size()));
+                received += buffer_size;
+                buffer_size = (((static_cast<long long>(1000)) < (file_size - received)) ? (static_cast<long long>(1000)) : (file_size - received));
             }
             if (sock.Disconnected())
             {
                 goto RETURN_FAIL;
             }
         } 
-        while( iRecvResult > static_cast <long long>(0));
+        while(received != file_size);
         
             ofs_file.close();
-            delete[] buffer;
             return 0;
         RETURN_FAIL:
             ofs_file.close();
-            Remove();
-            delete[] buffer;
+            this->Remove();
             return -1;
 
     }

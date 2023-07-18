@@ -1,3 +1,4 @@
+#pragma once
 #include "command.h"
 
 namespace rat{
@@ -20,7 +21,7 @@ std::vector<char> Command::ToTcpPacket(){
     }
     int tcp_size = 4 + 4 + static_cast<int>(strlen(&argument_[0])) + 1;
     v.resize(tcp_size);
-    char *buffer = &*v.begin();
+    char *buffer = std::to_address(v.begin());
 
 	memcpy(buffer, &tcp_size, 4);
 	memcpy(buffer + 4, &type_, 4);
@@ -32,7 +33,7 @@ int Command::GetType() const{
     return type_;
 }
 
-std::string Command::GetArgument(){
+std::string Command::GetArgument() const{
     std::string s = argument_;
     return s;
 }

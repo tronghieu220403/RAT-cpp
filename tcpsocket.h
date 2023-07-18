@@ -29,12 +29,8 @@ namespace rat{
         int SendInt(const int num);
         int SendLongLong(const long long num);
         
-        //void SetSocket(unsigned long long socket);
         unsigned long long GetSocket() const;
         void Close();
-        ~TcpSocket(){
-            Close();
-        };
     };
 
 }

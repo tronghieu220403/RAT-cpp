@@ -1,3 +1,5 @@
+#pragma once
+
 #include "command.h"
 #include "tcpsocket.h"
 #include "file.h"
