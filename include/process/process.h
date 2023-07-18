@@ -1,3 +1,6 @@
+#define UNICODE
+#define _UNICODE
+
 #ifndef __process_h
 #define __process_h
 

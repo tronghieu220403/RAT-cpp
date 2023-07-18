@@ -1,3 +1,6 @@
+#define UNICODE
+#define _UNICODE
+
 #include "registry/registry.h"
 
 #ifdef _WIN32
