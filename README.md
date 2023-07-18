@@ -1,6 +1,6 @@
 # Single server - multi clients TCP communication via IPv4 
 
-This is a small single server - multi clients TCP communication via IPv4 on Windows OS 64-bit.
+This is a small single server - multi clients TCP communication via IPv4, works on both 64-bit Windows and Linux OS.
 
 - [Problem](#problem)
 - [Abstract](#abstract)
