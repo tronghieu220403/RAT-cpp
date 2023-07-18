@@ -1,6 +1,5 @@
 #pragma once
 #include "file.h"
-#include <regex>
 
 namespace rat{
 
@@ -11,7 +10,7 @@ namespace rat{
     void File::SetFilePath(std::string_view file_path)
     {
         file_path_ = file_path;
-        file_path_ = std::regex_replace(file_path_, std::regex("\\"), "/");
+        std::replace(file_path_.begin(), file_path_.end(), '\\', '/');
     }
 
     int File::Remove()
