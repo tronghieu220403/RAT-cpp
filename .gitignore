@@ -48,6 +48,8 @@
 *.filters
 *.vcxproj
 *.sln
-*.opendb
-*.db-shm
 *.db-wal
+*.db-shm
+*.opendb
+*.iobj
+*.ipdb
