@@ -18,10 +18,10 @@ namespace rat{
         static std::mutex mt;
         const static int kDefaultPort = 27015;
         Server() = default;
+        Server(int n_clients);
         void Clean();
         int CreateLocalServer();
         int Listen();
-        void SetMaxClient(int n_clients);
         
         unsigned long long GetListenSocket();
         int GetMaxClient();

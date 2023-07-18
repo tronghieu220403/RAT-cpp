@@ -6,6 +6,12 @@ std::mutex Server::mt;
 
 std::map< std::string, std::queue<ServerCmd>, std::less<> > ServerInput::server_request_map_;
 
+
+Server::Server(int n_clients)
+{
+    max_client_ = n_clients;
+}
+
 int Server::CreateLocalServer()
 {
     int i_result;
@@ -43,15 +49,20 @@ int Server::CreateLocalServer()
 
 	// Setup the TCP listening socket
 	i_result = bind(listen_socket, result->ai_addr, (int)result->ai_addrlen);
-	if (i_result == SOCKET_ERROR) {
-		freeaddrinfo(result);
-		#ifdef _WIN32
-			closesocket(listen_socket);
-		#elif __linux__
-			close(listen_socket);
-		#endif
-		goto CREATE_FAILED;
-	}
+	#ifdef _WIN32
+		if (i_result == SOCKET_ERROR)
+	#elif __linux
+		if (i_result < 0)
+	#endif
+		{
+			freeaddrinfo(result);
+			#ifdef _WIN32
+				closesocket(listen_socket);
+			#elif __linux__
+				close(listen_socket);
+			#endif
+			goto CREATE_FAILED;
+		}
 
 	sock_ = TcpSocket(listen_socket);
 
@@ -70,17 +81,20 @@ int Server::CreateLocalServer()
 
 int Server::Listen()
 {
-	if (sock_.GetSocket() != INVALID_SOCKET) return -1;
-	if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
-		Clean();
-		return -1;
-	}
-	return 0;
-}
+	if (sock_.GetSocket() == INVALID_SOCKET) return -1;
+	#ifdef _WIN32
+		if (listen(sock_.GetSocket(), 0x7fffffff) == SOCKET_ERROR) {
+			Clean();
+			return -1;
+		}
+	#else
+    	if (listen(sock_.GetSocket(), GetMaxClient()) < 0) {
+			Clean();
+			return -1;
+		}
 
-void Server::SetMaxClient(int n_clients)
-{
-    max_client_ = n_clients;
+	#endif
+	return 0;
 }
 
 unsigned long long Server::GetListenSocket()
