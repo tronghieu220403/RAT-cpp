@@ -23,8 +23,9 @@
             "-g", 
             "${workspaceFolder}/include/*/*.cpp", 
             "${workspaceFolder}/src/${fileBasenameNoExtension}.cpp", 
+            "-lws2_32",
             "-o", 
-            "${workspaceFolder}/release/x64/Linux/${fileBasenameNoExtension}"
+            "${workspaceFolder}/release/x64/Windows/${fileBasenameNoExtension}.exe"
           ]
         },
         "options": {
