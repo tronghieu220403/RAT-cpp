@@ -3,9 +3,9 @@
 
 namespace rat{
 
-HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr): client_socket_(client_socket)
+HandleClient::HandleClient(unsigned long long client_socket, sockaddr_in client_addr)
 {
-	sock = TcpSocket(client_socket_);
+	sock = TcpSocket(client_socket);
 	std::string ip_addr;
 	ip_addr.resize((long long)20);
 	ip = inet_ntop(AF_INET, &client_addr.sin_addr, &ip_addr[0], 20);

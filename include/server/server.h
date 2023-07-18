@@ -1,7 +1,7 @@
 #pragma once
 #include "socket/platform.h"
 #include "command/servercmd.h"
-#include "server/handleclients.h"
+#include "server/handleclient.h"
 #include "server/handleconnections.h"
 #include "server/serverinput.h"
 
