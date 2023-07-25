@@ -1,8 +1,10 @@
-#ifndef __tcp_socket_h
-#define __tcp_socket_h
+#ifndef RAT_SOCKET_TCPSOCKET_H_
+#define RAT_SOCKET_TCPSOCKET_H_
+
+#include <vector>
 
 #include "socket/platform.h"
-#include <vector>
+
 namespace rat{
 
     class TcpSocket

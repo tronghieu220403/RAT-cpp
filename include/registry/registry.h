@@ -1,15 +1,16 @@
+#ifndef RAT_REGISTRY_REGISTRY_H_
+#define RAT_REGISTRY_REGISTRY_H_
+
 #define UNICODE
 #define _UNICODE
 
-#ifndef __registry_h
-#define __registry_h
-
 #ifdef _WIN32
+
+#include <WS2tcpip.h>
+#include <strsafe.h>
 
 #include <map>
 #include <string>
-#include <WS2tcpip.h>
-#include <strsafe.h>
 
 namespace rat
 {

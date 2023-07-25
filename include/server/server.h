@@ -1,5 +1,5 @@
-#ifndef __server_h
-#define __server_h
+#ifndef RAT_SERVER_SERVER_H_
+#define RAT_SERVER_SERVER_H_
 
 #include "socket/platform.h"
 #include "command/servercmd.h"

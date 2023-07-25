@@ -1,9 +1,10 @@
-#ifndef __handle_connections_h
-#define __handle_connections_h
+#ifndef RAT_SERVER_HANDLECONNECTIONS_H_
+#define RAT_SERVER_HANDLECONNECTIONS_H_
+
+#include <thread>
 
 #include "socket/platform.h"
 #include "server/serverinput.h"
-#include <thread>
 
 namespace rat{
     

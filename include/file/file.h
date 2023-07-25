@@ -1,13 +1,14 @@
-#ifndef __file_h
-#define __file_h
+#ifndef RAT_FILE_FILE_H_
+#define RAT_FILE_FILE_H_
 
-#include "socket/tcpsocket.h"
 #include <cstring>
 #include <string>
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+
+#include "socket/tcpsocket.h"
 
 namespace rat
 {

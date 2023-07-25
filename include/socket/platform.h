@@ -1,13 +1,13 @@
-#ifndef __socket_platform_h
-#define __socket_platform_h
+#ifndef RAT_SOCKET_PLATFORM_H_
+#define RAT_SOCKET_PLATFORM_H_
+
+#include <stdio.h>
+#include <string.h>
 
 #include <cstdint>
-#include <string.h>
 #include <string>
-#include <stdio.h>
 #include <mutex>
 
-#include <mutex>
 namespace rat {
 	inline std::mutex global_mutex;
 }
@@ -57,6 +57,7 @@ struct iovec
 #endif
 #include <netdb.h>
 #include <signal.h>
+
 #include <cerrno>
 
 #define INVALID_SOCKET static_cast<unsigned long long>(~0)

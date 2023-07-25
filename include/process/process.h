@@ -1,9 +1,10 @@
+#ifndef RAT_PROCESS_PROCESS_H_
+#define RAT_PROCESS_PROCESS_H_
+
 #define UNICODE
 #define _UNICODE
 
-#ifndef __process_h
-#define __process_h
-
+#include <string.h>
 #if defined(_WIN32)
 	#include <WS2tcpip.h>
 	#include <TlHelp32.h>
@@ -11,8 +12,8 @@
 	#include <sys/wait.h>
 	#include <dirent.h>
 #endif
+
 #include <string>
-#include <string.h>
 #include <fstream>
 
 namespace rat

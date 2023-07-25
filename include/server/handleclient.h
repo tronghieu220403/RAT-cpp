@@ -1,11 +1,12 @@
-#ifndef __handle_client_h
-#define __handle_client_h
+#ifndef RAT_SERVER_HANDLECLIENT_H_
+#define RAT_SERVER_HANDLECLIENT_H_
+
+#include <thread>
 
 #include "socket/tcpsocket.h"
 #include "command/servercmd.h"
 #include "server/serverinput.h"
 #include "file/file.h"
-#include <thread>
 
 namespace rat{
 

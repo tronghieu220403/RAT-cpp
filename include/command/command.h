@@ -1,7 +1,8 @@
-#ifndef __command_h
-#define __command_h
+#ifndef RAT_COMMAND_COMMAND_H_
+#define RAT_COMMAND_COMMAND_H_
 
 #include <string.h>
+
 #include <iostream>
 #include <vector>
 
