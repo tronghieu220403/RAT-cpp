@@ -3,7 +3,7 @@
 This is a small single server - multi clients TCP communication via IPv4, works on both 64-bit Windows and Linux OS.
 
 - [Problem](#problem)
-- [Abstract](#abstract)
+- [Problem Solving Proposal](#problem-solving-proposal)
 - [Features](#features)
 - [Commands](#commands)
 - [Folder structure](#folder-structure)
@@ -22,11 +22,11 @@ Advanced requirements:
 - The server can issue commands to multiple clients at the same time.
 - The server can get large files.
 
-Abstract
---------
+Problem Solving Proposal
+-------------------------
 The following are some things to be aware of, along with my solutions:
 
-* Manage multi clients at the same time: Using multi-thread, commands for each client will be stored in a queue, and every client will have a function to await server commands.
+* Manage multi clients at the same time: Using multi-thread, each client has a queue to stored commands, and every client will have a function to await server commands.
 
 * Get a file with large size: We are **unable to load files to RAM when dealing with huge files**. Therefore, the approach is to find functions that can **read or write data without putting it into RAM**.
 
