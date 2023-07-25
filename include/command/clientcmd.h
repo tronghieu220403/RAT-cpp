@@ -1,5 +1,11 @@
-#ifndef __client_cmd_h
-#define __client_cmd_h
+#ifndef RAT_COMMAND_CLIENTCMD_H_
+#define RAT_COMMAND_CLIENTCMD_H_
+
+#include <string.h>
+
+#include <iostream>
+#include <vector>
+#include <sstream>
 
 #include "command/command.h"
 #include "socket/tcpsocket.h"
@@ -8,10 +14,7 @@
 #ifdef _WIN32
 #include "registry/registry.h"
 #endif
-#include <string.h>
-#include <iostream>
-#include <vector>
-#include <sstream>
+
 namespace rat{
 
     class ClientCmd: public Command

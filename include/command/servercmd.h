@@ -1,12 +1,14 @@
-#ifndef __server_cmd_h
-#define __server_cmd_h
+#ifndef RAT_COMMAND_SEVERCMD_H_
+#define RAT_COMMAND_SEVERCMD_H_
 
-#include "command/command.h"
 #include <string.h>
+
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <algorithm>
+
+#include "command/command.h"
 
 namespace rat{
 

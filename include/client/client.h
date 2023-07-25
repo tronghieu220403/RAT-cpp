@@ -1,5 +1,5 @@
-#ifndef __client_h
-#define __client_h
+#ifndef RAT_CLIENT_CLIENT_H_
+#define RAT_CLIENT_CLIENT_H_
 
 #include "command/clientcmd.h"
 
