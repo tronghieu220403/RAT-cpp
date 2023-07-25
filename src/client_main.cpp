@@ -1,6 +1,6 @@
-#include "client/client.h"
-
 #include <iostream>
+
+#include "client/client.h"
 
 int main()
 {
